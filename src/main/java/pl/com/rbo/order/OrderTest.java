@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static pl.com.rbo.order.OrderTestStory.*;
 
-class OrderTest {
+public class OrderTest {
 
 
     @Test
