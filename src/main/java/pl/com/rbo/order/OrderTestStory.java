@@ -22,7 +22,7 @@ public class OrderTestStory {
         return new OrderTestStory();
     }
 
-    public OrderTestStory get_one_item(){
+    public OrderTestStory get_one_product(){
         Product tshirt = new Product(TSHIRT, 40d);
         products.add(tshirt);
         cheapestProduct = tshirt;
@@ -30,11 +30,11 @@ public class OrderTestStory {
         return this;
     }
 
-    public OrderTestStory get_anything(){
-        return get_one_item();
+    public OrderTestStory get_any_product(){
+        return get_one_product();
     }
 
-    public OrderTestStory get_two_items(){
+    public OrderTestStory get_two_products(){
         Product tshirt = new Product(TSHIRT, 40d);
         Product jeans = new Product(JEANS, 100d);
         products.add(tshirt);
@@ -44,7 +44,7 @@ public class OrderTestStory {
         return this;
     }
 
-    public OrderTestStory get_three_items(){
+    public OrderTestStory get_three_products(){
         Product tshirt = new Product(TSHIRT, 40d);
         Product jeans = new Product(JEANS, 100d);
         Product socks = new Product(SOCKS, 10d);
@@ -83,12 +83,12 @@ public class OrderTestStory {
         return this;
     }
 
-    public void expect_cheapest_item_half_off(){
+    public void expect_cheapest_product_half_off(){
         Double expectedPrice = expectedRegularPrice - (cheapestProduct.getPrice() / 2);
         assertEquals(order.getTotalPrice(), expectedPrice);
     }
 
-    public void expect_cheapest_item_free(){
+    public void expect_cheapest_product_free(){
         Double expectedPrice = expectedRegularPrice - cheapestProduct.getPrice();
         assertEquals(order.getTotalPrice(), expectedPrice);
     }

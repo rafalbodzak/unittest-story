@@ -11,33 +11,33 @@ public class OrderTest {
     public void discount_policy_stories(){
 
         Go_shopping()
-                .get_one_item()
+                .get_one_product()
                 .buy()
                 .expect_no_discount();
 
         Go_shopping()
-                .get_two_items()
+                .get_two_products()
                 .buy()
-                .expect_cheapest_item_half_off();
+                .expect_cheapest_product_half_off();
 
         Go_shopping()
-                .get_three_items()
+                .get_three_products()
                 .buy()
-                .expect_cheapest_item_free();
+                .expect_cheapest_product_free();
     }
 
     @Test
     public void return_policy_stories(){
 
         Go_shopping()
-                .get_anything()
+                .get_any_product()
                 .buy()
                 .wait_less_than_return_period()
                 .returnProducts()
                 .expect_return_accepted();
 
         Go_shopping()
-                .get_anything()
+                .get_any_product()
                 .buy()
                 .wait_more_than_return_period()
                 .returnProducts()
