@@ -11,37 +11,34 @@ public class OrderTest {
     public void discount_policy_stories(){
 
         Go_shopping()
-                .get_jeans()
+                .get_one_item()
                 .buy()
-                .got_no_discount();
+                .expect_no_discount();
 
         Go_shopping()
-                .get_jeans()
-                .get_tshirt()
+                .get_two_items()
                 .buy()
-                .got_cheapest_item_half_off();
+                .expect_cheapest_item_half_off();
 
         Go_shopping()
-                .get_tshirt()
-                .get_jeans()
-                .get_tshirt()
+                .get_three_items()
                 .buy()
-                .got_cheapest_item_free();
+                .expect_cheapest_item_free();
     }
 
     @Test
     public void return_policy_stories(){
 
         Go_shopping()
-                .get_jeans()
+                .get_anything()
                 .buy()
                 .return_before_return_period()
-                .got_return_accepted();
+                .expect_return_accepted();
 
         Go_shopping()
-                .get_jeans()
+                .get_anything()
                 .buy()
                 .return_after_return_period()
-                .got_return_rejected();
+                .expect_return_rejected();
     }
 }

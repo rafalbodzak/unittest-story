@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class OrderItem {
-    private String name;
+public class Item {
+    private ItemKind kind;
     private Double price;
 }
