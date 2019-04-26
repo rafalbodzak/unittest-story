@@ -1,24 +1,20 @@
 package pl.com.rbo.order;
 
-import org.junit.Assert;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
-import static pl.com.rbo.order.ItemKind.*;
+import static pl.com.rbo.order.ProductKind.*;
+import static org.junit.Assert.*;
 
 public class OrderTestStory {
 
-    private static final Integer GREATER_THAN_RETURN_PERIOD = Order.RETURN_PERIOD + 1;
-    private static final Integer LESS_THAN_RETURN_PERIOD = Order.RETURN_PERIOD - 1;
-
     private Order order;
-    private List<Item> items = new ArrayList<Item>();
-    private Item cheapestItem;
+    private List<Product> products = new ArrayList<Product>();
+    private Product cheapestProduct;
     private Double expectedRegularPrice;
-    private Integer returnPeriod;
+    private LocalDate currentDate = LocalDate.now();
+    private Boolean returnAccepted = false;
 
     private OrderTestStory(){}
 
@@ -27,9 +23,9 @@ public class OrderTestStory {
     }
 
     public OrderTestStory get_one_item(){
-        Item tshirt = new Item(TSHIRT, 40d);
-        items.add(tshirt);
-        cheapestItem = tshirt;
+        Product tshirt = new Product(TSHIRT, 40d);
+        products.add(tshirt);
+        cheapestProduct = tshirt;
         expectedRegularPrice = tshirt.getPrice();
         return this;
     }
@@ -39,79 +35,73 @@ public class OrderTestStory {
     }
 
     public OrderTestStory get_two_items(){
-        Item tshirt = new Item(TSHIRT, 40d);
-        Item jeans = new Item(JEANS, 100d);
-        items.add(tshirt);
-        items.add(jeans);
+        Product tshirt = new Product(TSHIRT, 40d);
+        Product jeans = new Product(JEANS, 100d);
+        products.add(tshirt);
+        products.add(jeans);
         expectedRegularPrice = tshirt.getPrice() + jeans.getPrice();
-        cheapestItem = tshirt;
+        cheapestProduct = tshirt;
         return this;
     }
 
     public OrderTestStory get_three_items(){
-        Item tshirt = new Item(TSHIRT, 40d);
-        Item jeans = new Item(JEANS, 100d);
-        Item socks = new Item(SOCKS, 10d);
-        items.add(tshirt);
-        items.add(jeans);
-        items.add(socks);
+        Product tshirt = new Product(TSHIRT, 40d);
+        Product jeans = new Product(JEANS, 100d);
+        Product socks = new Product(SOCKS, 10d);
+        products.add(tshirt);
+        products.add(jeans);
+        products.add(socks);
         expectedRegularPrice = tshirt.getPrice() + jeans.getPrice() + socks.getPrice();
-        cheapestItem = socks;
+        cheapestProduct = socks;
         return this;
     }
 
     public OrderTestStory buy(){
         order = new Order();
-        order.addItems(items);
-        order.finalize(LocalDate.now());
+        order.addItems(products);
+        order.finalize(currentDate);
         return this;
     }
 
-    public OrderTestStory return_after_return_period(){
-        returnPeriod = GREATER_THAN_RETURN_PERIOD;
+    public OrderTestStory wait_more_than_return_period(){
+        currentDate = currentDate.plusDays(Order.RETURN_PERIOD + 1);
         return this;
     }
 
-    public OrderTestStory return_before_return_period(){
-        returnPeriod = LESS_THAN_RETURN_PERIOD;
+    public OrderTestStory wait_less_than_return_period(){
+        currentDate = currentDate.plusDays(Order.RETURN_PERIOD - 1);
+        return this;
+    }
+
+    public OrderTestStory returnProducts(){
+        try{
+            order.rollback(currentDate);
+            returnAccepted = true;
+        }catch (OrderRollbackException e){
+            returnAccepted = false;
+        }
         return this;
     }
 
     public void expect_cheapest_item_half_off(){
-        Assert.assertTrue(order.getTotalPrice() == expectedRegularPrice - (cheapestItem.getPrice() / 2));
+        Double expectedPrice = expectedRegularPrice - (cheapestProduct.getPrice() / 2);
+        assertEquals(order.getTotalPrice(), expectedPrice);
     }
 
     public void expect_cheapest_item_free(){
-        Assert.assertTrue(order.getTotalPrice() == expectedRegularPrice - (cheapestItem.getPrice()));
+        Double expectedPrice = expectedRegularPrice - cheapestProduct.getPrice();
+        assertEquals(order.getTotalPrice(), expectedPrice);
     }
 
-    public void expect_no_discount(){
-        Assert.assertTrue(order.getTotalPrice() == expectedRegularPrice);
+    public void expect_no_discount() {
+        assertEquals(order.getTotalPrice(), expectedRegularPrice);
     }
 
     public void expect_return_rejected(){
-        Order order = new Order();
-        order.addItems(items);
-        LocalDate finalizeDay = LocalDate.now();
-        order.finalize(finalizeDay);
-        try{
-            order.rollback(finalizeDay.minusDays(returnPeriod));
-        }catch(OrderRollbackException e){
-            Assert.assertTrue(true);
-        }
-        Assert.fail();
+        assertFalse(returnAccepted);
     }
 
     public void expect_return_accepted(){
-        Order order = new Order();
-        order.addItems(items);
-        LocalDate finalizeDay = LocalDate.now();
-        order.finalize(finalizeDay);
-        try{
-            order.rollback(finalizeDay.minusDays(returnPeriod));
-        }catch(OrderRollbackException e){
-            Assert.fail();
-        }
-        Assert.assertTrue(true);
+        assertTrue(returnAccepted);
     }
 }

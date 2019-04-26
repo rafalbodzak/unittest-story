@@ -32,13 +32,15 @@ public class OrderTest {
         Go_shopping()
                 .get_anything()
                 .buy()
-                .return_before_return_period()
+                .wait_less_than_return_period()
+                .returnProducts()
                 .expect_return_accepted();
 
         Go_shopping()
                 .get_anything()
                 .buy()
-                .return_after_return_period()
+                .wait_more_than_return_period()
+                .returnProducts()
                 .expect_return_rejected();
     }
 }

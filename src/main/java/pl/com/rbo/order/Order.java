@@ -14,21 +14,21 @@ public class Order {
 
     private DiscountCalculator discountCalculator = new DiscountCalculator();
 
-    private List<Item> items = new ArrayList<Item>();
+    private List<Product> products = new ArrayList<Product>();
     private OrderStatus status = IN_PROGRESS;
     private LocalDate finalizeDate;
     private Double totalPrice;
 
-    public void addItem(Item item){
-        items.add(item);
+    public void addItem(Product product){
+        products.add(product);
     }
-    public void addItems(List<Item> items){
-        this.items.addAll(items);
+    public void addItems(List<Product> products){
+        this.products.addAll(products);
     }
 
     public void finalize(LocalDate date){
         finalizeDate = date;
-        totalPrice = discountCalculator.calculatePrice(items);
+        totalPrice = discountCalculator.calculatePrice(products);
         status = FINALIZED;
     }
 

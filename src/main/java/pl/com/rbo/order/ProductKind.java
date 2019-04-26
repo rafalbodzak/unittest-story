@@ -1,6 +1,6 @@
 package pl.com.rbo.order;
 
-public enum ItemKind {
+public enum ProductKind {
 
     JEANS,
     TSHIRT,

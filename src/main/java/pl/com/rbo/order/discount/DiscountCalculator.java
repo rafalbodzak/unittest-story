@@ -1,6 +1,6 @@
 package pl.com.rbo.order.discount;
 
-import pl.com.rbo.order.Item;
+import pl.com.rbo.order.Product;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -16,10 +16,10 @@ public class DiscountCalculator {
         discountPolicies.add(new Buy3ItemsGetCheapestFreeDiscountPolicy());
     }
 
-    public Double calculatePrice(List<Item> items){
+    public Double calculatePrice(List<Product> products){
         return discountPolicies.stream()
-                .filter(policy -> policy.applies(items))
-                .map(policy -> policy.calculate(items))
+                .filter(policy -> policy.applies(products))
+                .map(policy -> policy.calculate(products))
                 .min(Comparator.comparingDouble(Double::doubleValue))
                 .get();
     }
